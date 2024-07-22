@@ -1,5 +1,14 @@
-import userModel from "../models/usermodel";
+import userModel from "../models/usermodel.js";
+import validator from "validator";
+import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken';
 
+const createtoken=(id)=>{
+    return jwt.sign({id},process.env.JWT_SECRET)
+}
+const loginuser=()=>{
+
+}
 
 
 const registeruser=async(req,res)=>{
@@ -15,7 +24,7 @@ if(!validator.isEmail(email)){
 if(password.length<8){
     return res.json({success:false,message:"pease enter a strong password"})
 }
-const salt=await bcrypt.gensalt(10)
+const salt=await bcrypt.genSalt(10)
 const hashedpassword=await bcrypt.hash(password,salt)
 const newUser=new userModel(
     {
@@ -25,8 +34,15 @@ const newUser=new userModel(
     }
 )
 const user=await newUser.save()
+const token=createtoken(user._id)
+res.json({
+    success:true,
+    token
+})
     }
     catch(error){
-        
+        console.log(error);
+        res.json({success:false,message:"error"})
     }
 }
+export  { registeruser,loginuser }
