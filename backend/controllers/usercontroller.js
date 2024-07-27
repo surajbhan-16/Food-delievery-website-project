@@ -21,10 +21,10 @@ const loginuser=async(req,res)=>{
             if(!ismatch){
                 res.json({success:false,message:"invalid credentials"});
             }
-            const token1=createtoken(user._id)
+            const token=createtoken(user._id)
             return res.json({
                 success:true,
-                token1
+                token
             })
         }
     }
